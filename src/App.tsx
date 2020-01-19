@@ -1,6 +1,6 @@
 import React, {createContext} from 'react';
-import * as ReactNavigation from 'react-navigation';
-import * as ReactStack from 'react-navigation-stack';
+import {createAppContainer, NavigationContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
 import Axios from 'axios';
 
 import {HttpbinService, HttpbinServiceDefault} from './Httpbin';
@@ -19,8 +19,8 @@ export const AppServicesContext = createContext<AppServices>({
 });
 
 const App: React.FC = (): React.ReactElement => {
-  const Router: ReactNavigation.NavigationContainer = ReactNavigation.createAppContainer(
-    ReactStack.createStackNavigator(
+  const Router: NavigationContainer = createAppContainer(
+    createStackNavigator(
       {
         First: FirstScreen,
       },

@@ -50,6 +50,7 @@ export const FirstScreen: React.FC<
             onPress={() => setShouldFetch(true)}
           />
           <Text
+            testID={'uuid'}
             style={{
               width: '100%',
               textAlign: 'center',
