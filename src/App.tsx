@@ -1,62 +1,28 @@
-import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import {createAppContainer, NavigationContainer} from 'react-navigation';
-import {
-  createStackNavigator,
-  NavigationStackProp,
-} from 'react-navigation-stack';
+import React, {createContext} from 'react';
+import * as ReactNavigation from 'react-navigation';
+import * as ReactStack from 'react-navigation-stack';
+import Axios from 'axios';
 
-export interface FirstScreenProps {
-  navigation: NavigationStackProp;
+import {HttpbinService, HttpbinServiceDefault} from './Httpbin';
+import {FirstScreen} from './FirstScreen';
+
+export interface AppServices {
+  httpbin: HttpbinService;
 }
 
-const FirstScreen: React.FC<FirstScreenProps> = (props): React.ReactElement => (
-  <SafeAreaView>
-    <ScrollView>
-      <View>
-        <TouchableWithoutFeedback
-          onPress={() =>
-            props.navigation.push('Second', {message: 'Hello World'})
-          }>
-          <Text style={{color: 'blue', fontSize: 40}}>First</Text>
-        </TouchableWithoutFeedback>
-      </View>
-    </ScrollView>
-  </SafeAreaView>
-);
-
-export interface SecondScreenProps {
-  navigation: NavigationStackProp;
-}
-
-const SecondScreen: React.FC<SecondScreenProps> = (
-  props,
-): React.ReactElement => (
-  <SafeAreaView>
-    <ScrollView>
-      <View>
-        <TouchableWithoutFeedback onPress={() => props.navigation.goBack()}>
-          <Text style={{color: 'red', fontSize: 40}}>
-            {props.navigation.getParam('message', '')}
-          </Text>
-        </TouchableWithoutFeedback>
-      </View>
-    </ScrollView>
-  </SafeAreaView>
-);
+export const AppServicesContext = createContext<AppServices>({
+  httpbin: new HttpbinServiceDefault(
+    Axios.create({
+      baseURL: 'https://httpbin.org/',
+    }),
+  ),
+});
 
 const App: React.FC = (): React.ReactElement => {
-  const Router: NavigationContainer = createAppContainer(
-    createStackNavigator(
+  const Router: ReactNavigation.NavigationContainer = ReactNavigation.createAppContainer(
+    ReactStack.createStackNavigator(
       {
         First: FirstScreen,
-        Second: SecondScreen,
       },
       {
         initialRouteName: 'First',
