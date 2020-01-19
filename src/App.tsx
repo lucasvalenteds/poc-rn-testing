@@ -1,44 +1,74 @@
 import React from 'react';
 import {
   SafeAreaView,
-  StyleSheet,
   ScrollView,
   View,
   Text,
-  StatusBar,
-  ViewStyle,
-  TextStyle,
+  TouchableWithoutFeedback,
 } from 'react-native';
+import {createAppContainer, NavigationContainer} from 'react-navigation';
+import {
+  createStackNavigator,
+  NavigationStackProp,
+} from 'react-navigation-stack';
 
-interface AppStyle {
-  wrapper: ViewStyle;
-  title: TextStyle;
+export interface FirstScreenProps {
+  navigation: NavigationStackProp;
 }
 
-const App: React.FC = (): React.ReactElement => {
-  const style: StyleSheet.NamedStyles<AppStyle> = StyleSheet.create({
-    wrapper: {
-      marginTop: 32,
-      paddingHorizontal: 24,
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: '600',
-    },
-  });
+const FirstScreen: React.FC<FirstScreenProps> = (props): React.ReactElement => (
+  <SafeAreaView>
+    <ScrollView>
+      <View>
+        <TouchableWithoutFeedback
+          onPress={() =>
+            props.navigation.push('Second', {message: 'Hello World'})
+          }>
+          <Text style={{color: 'blue', fontSize: 40}}>First</Text>
+        </TouchableWithoutFeedback>
+      </View>
+    </ScrollView>
+  </SafeAreaView>
+);
 
-  return (
-    <>
-      <StatusBar />
-      <SafeAreaView>
-        <ScrollView>
-          <View style={style.wrapper}>
-            <Text style={style.title}>React Native</Text>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+export interface SecondScreenProps {
+  navigation: NavigationStackProp;
+}
+
+const SecondScreen: React.FC<SecondScreenProps> = (
+  props,
+): React.ReactElement => (
+  <SafeAreaView>
+    <ScrollView>
+      <View>
+        <TouchableWithoutFeedback onPress={() => props.navigation.goBack()}>
+          <Text style={{color: 'red', fontSize: 40}}>
+            {props.navigation.getParam('message', '')}
+          </Text>
+        </TouchableWithoutFeedback>
+      </View>
+    </ScrollView>
+  </SafeAreaView>
+);
+
+const App: React.FC = (): React.ReactElement => {
+  const Router: NavigationContainer = createAppContainer(
+    createStackNavigator(
+      {
+        First: FirstScreen,
+        Second: SecondScreen,
+      },
+      {
+        initialRouteName: 'First',
+        headerMode: 'none',
+        defaultNavigationOptions: {
+          animationEnabled: false,
+        },
+      },
+    ),
   );
+
+  return <Router />;
 };
 
 export default App;
